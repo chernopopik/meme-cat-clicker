@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Мемный Кот Кликер</title>
+        <script src="https://unpkg.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body oncontextmenu="return false;">
+    <button id="mute-btn" onclick="SFX.toggleMute()" style="position:fixed;top:16px;right:18px;z-index:45;width:44px;height:44px;border-radius:12px;background:rgba(15,23,42,0.8);border:2px solid #38bdf8;color:#fff;font-size:20px;cursor:pointer;">🔊</button>
+
+    <div id="left-panel">
+        <div class="side-btn" id="btn-skins"><span class="big">🐱</span>СКИН</div>
+        <div class="side-btn" id="btn-x2"><span class="big">⚡X2</span><span id="x2-timer">Реклама 60с</span></div>
+        <div class="side-btn" id="btn-wheel"><span class="big">🎡</span><span id="wheel-timer">Рулетка</span></div>
+        <div class="side-btn" id="btn-daily"><span class="big">🎁</span><span id="daily-status">Награда</span></div>
+        <div class="side-btn" id="btn-prestige"><span class="big">🐟</span><span id="fish-count">0 рыбок</span></div>
+        <div class="side-btn" id="btn-bosses" style="border-color:#ef4444;"><span class="big">⚔️</span>БОССЫ</div>
+        <div class="side-btn" id="btn-ach" style="border-color:#facc15;"><span class="big">🏆</span><span id="ach-status">Ачивки</span></div>
+        <div class="side-btn" id="btn-room" style="border-color:#c084fc;"><span class="big">🏠</span>Комната</div>
+        <div class="side-btn" id="btn-top" style="border-color:#38bdf8;"><span class="big">🏅</span>Топ</div>
+    </div>
+
+    <div id="center-area">
+        <div id="room-layer" style="position:absolute;inset:0;pointer-events:none;z-index:5;"></div>
+        <div id="score-box" style="z-index:2;"><div id="score">0 кл.</div><div id="per-sec">0 кл./сек</div></div>
+        <div id="cat-wrapper" style="z-index:2;"><div id="cat-btn"><span id="cat-emoji">😼</span><img id="cat-img" src="" style="display: none;"></div></div>
+    </div>
+
+    <div id="right-panel"></div>
+
+    <div class="modal" id="skin-modal"><div class="modal-box" style="width:560px;"><h3>Выбор кота (16 скинов)</h3><div class="grid-box" id="skin-grid" style="grid-template-columns:repeat(3,1fr);max-height:55vh;overflow-y:auto;padding-right:4px;"></div><button class="close-btn" onclick="closeModals()">Закрыть</button></div></div>
+    <div class="modal" id="wheel-modal"><div class="modal-box"><h3>🎡 Колесо Удачи</h3><div id="wheel-result" style="font-size:18px;font-weight:bold;margin:18px 0;min-height:50px;color:#fde047;">Жми крутить!</div><button class="action-btn" id="spin-btn">Крутить!</button><button class="close-btn" onclick="closeModals()">Закрыть</button></div></div>
+    <div class="modal" id="daily-modal"><div class="modal-box"><h3>🎁 Ежедневные награды</h3><div class="grid-box" id="daily-grid" style="grid-template-columns:repeat(3,1fr);"></div><button class="action-btn" id="claim-daily-btn">Забрать</button><button class="close-btn" onclick="closeModals()">Закрыть</button></div></div>
+
+    <div class="modal" id="prestige-modal">
+        <div class="modal-box" style="width:480px;">
+            <h3>🐟 Перерождение и Таланты</h3>
+            <p style="font-size:13px;color:#94a3b8;margin-top:6px;">Баланс: <b id="modal-fish" style="color:#facc15;">0 🐟</b> | Сброс от 1M кл.</p>
+            <button class="action-btn" id="do-prestige-btn" style="width:100%;margin:12px 0;">Переродиться (+0 🐟)</button>
+            <div id="talents-list" style="display:flex;flex-direction:column;gap:8px;max-height:45vh;overflow-y:auto;text-align:left;"></div>
+            <button class="close-btn" onclick="closeModals()">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="boss-modal">
+        <div class="modal-box" style="width:440px;">
+            <h3 id="boss-title">⚔️ Боссы</h3>
+            <div id="boss-select-view">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0;">
+                    <button class="action-btn" id="boss-prev" style="padding:10px 16px;font-size:20px;">◀</button>
+                    <div style="text-align:center;flex:1;">
+                        <div style="height:125px;display:flex;justify-content:center;align-items:center;">
+                            <img id="boss-img" src="" style="width:120px;height:120px;object-fit:contain;border-radius:18px;display:none;">
+                            <div id="boss-icon" style="font-size:86px;transition:0.2s;">🥒</div>
+                        </div>
+                        <div id="boss-name" style="font-size:22px;font-weight:bold;margin-top:6px;">Огурец</div>
+                        <div id="boss-req" style="font-size:13px;color:#94a3b8;margin-top:4px;">Нужно: 5K кл.</div>
+                        <div id="boss-reward-info" style="font-size:13px;color:#4ade80;margin-top:4px;">Награда: ...</div>
+                    </div>
+                    <button class="action-btn" id="boss-next" style="padding:10px 16px;font-size:20px;">▶</button>
+                </div>
+                <button class="action-btn" id="boss-start-btn" style="width:100%;">В БОЙ! (30 сек)</button>
+                <button class="close-btn" onclick="closeModals()" style="width:100%;margin-top:8px;">Закрыть</button>
+            </div>
+            <div id="boss-fight-view" style="display:none;margin:15px 0;">
+                <div id="boss-timer" style="font-size:22px;font-weight:900;color:#f87171;">30.0 сек</div>
+                <div style="width:100%;height:22px;background:#0f172a;border-radius:11px;overflow:hidden;margin:10px 0;border:2px solid #ef4444;">
+                    <div id="boss-hp-bar" style="width:100%;height:100%;background:linear-gradient(90deg,#dc2626,#f97316);transition:width 0.08s;"></div>
+                </div>
+                <div id="boss-hp-text" style="font-size:14px;font-weight:bold;margin-bottom:12px;">1000 / 1000 HP</div>
+                <div id="boss-target" style="cursor:pointer;display:inline-flex;justify-content:center;align-items:center;transition:transform 0.05s;">
+                    <img id="boss-fight-img" src="" style="width:155px;height:155px;object-fit:contain;border-radius:20px;filter:drop-shadow(0 0 18px rgba(239,68,68,0.65));display:none;">
+                    <span id="boss-fight-emoji" style="font-size:110px;">🥒</span>
+                </div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:10px;">Жми по боссу как можно быстрее!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="boss-win-modal" style="z-index: 60;">
+        <div class="modal-box" style="border-color: #22c55e; box-shadow: 0 0 35px rgba(34, 197, 94, 0.45);">
+            <div style="font-size: 56px; margin-bottom: 8px;">🏆</div>
+            <h3 id="boss-win-title" style="color: #4ade80; font-size: 22px;">ПОБЕДА!</h3>
+            <div id="boss-win-reward" style="font-size: 18px; font-weight: bold; margin: 16px 0; color: #facc15; line-height: 1.5;">+0 кл.</div>
+            <button class="action-btn" onclick="document.getElementById('boss-win-modal').style.display='none'; document.getElementById('btn-bosses').click();" style="width: 100%;">Забрать награду!</button>
+        </div>
+    </div>
+
+    <div class="modal" id="ach-modal">
+        <div class="modal-box" style="width:480px;">
+            <h3>🏆 Достижения (+5% дохода за каждое)</h3>
+            <p style="font-size:13px;color:#4ade80;margin-top:4px;">Текущий бонус от ачивок: <b id="ach-bonus-text">+0%</b></p>
+            <div id="ach-list" style="display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto;margin:14px 0;text-align:left;"></div>
+            <button class="close-btn" onclick="closeModals()">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="room-modal">
+        <div class="modal-box" style="width:480px;">
+            <h3>🏠 Интерьер комнаты кота</h3>
+            <p style="font-size:13px;color:#94a3b8;margin-top:4px;">Предметы появляются вокруг кота и дают бонусы</p>
+            <div id="room-list" style="display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto;margin:14px 0;text-align:left;"></div>
+            <button class="close-btn" onclick="closeModals()">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="top-modal">
+        <div class="modal-box" style="width:440px;">
+            <h3>🏅 Таблица рекордов</h3>
+            <div id="top-list" style="display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow-y:auto;margin:14px 0;text-align:left;"></div>
+            <button class="close-btn" onclick="closeModals()">Закрыть</button>
+        </div>
+    </div>
+
+    <script src="sound.js"></script>
+    <script src="data.js"></script>
+    <script src="game.js"></script>
+    <script src="room.js"></script>
+    <script src="yandex.js"></script>
+</body>
+</html>
