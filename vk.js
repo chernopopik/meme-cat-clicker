@@ -1,28 +1,28 @@
-vkBridge.send('VKWebAppInit');
-
-if (window.vkBridge) {
-    vkBridge.send('VKWebAppInit')
-        .then(() => console.log('VK Bridge OK'))
-        .catch((err) => console.error('VK Bridge Error:', err));
-}
-
 window.vkReady = false;
 
-function startVKBridge() {
+function initVK() {
+    if (window.vkReady) return;
     if (window.vkBridge) {
         vkBridge.send('VKWebAppInit')
             .then(() => {
                 window.vkReady = true;
-                vkBridge.send('VKWebAppShowBannerAd', { banner_location: 'bottom' }).catch(() => {});
+                console.log('VK Bridge успешно инициализирован');
             })
-            .catch(() => {});
+            .catch((err) => {
+                console.warn('Ошибка VKWebAppInit:', err);
+            });
     }
 }
-startVKBridge();
-window.addEventListener('load', startVKBridge);
+
+initVK();
+window.addEventListener('DOMContentLoaded', initVK);
+window.addEventListener('load', initVK);
 
 window.showVKRewarded = function(onReward) {
-    if (!window.vkReady || !window.vkBridge) { onReward(); return; }
+    if (!window.vkReady || !window.vkBridge) {
+        onReward();
+        return;
+    }
     const wasMuted = window.SFX?.muted;
     if (window.SFX && !wasMuted) window.SFX.muted = true;
 
@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnTop.onclick = () => {
         const score = window.state ? Math.floor(state.totalEarned) : 0;
         if (window.vkReady && window.vkBridge) {
-            vkBridge.send('VKWebAppShowLeaderBoardBox', { user_result: score }).catch(() => showLocalTopModal(score));
+            vkBridge.send('VKWebAppShowLeaderBoardBox', { user_result: score })
+                .catch(() => showLocalTopModal(score));
         } else {
             showLocalTopModal(score);
         }
