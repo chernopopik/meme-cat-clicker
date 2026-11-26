@@ -1,4 +1,10 @@
 window.vkReady = false;
+if (window.vkBridge) {
+    vkBridge.send('VKWebAppInit')
+        .then(() => console.log('VK Bridge OK'))
+        .catch((err) => console.error('VK Bridge Error:', err));
+}
+
 
 function startVKBridge() {
     if (window.vkBridge) {
