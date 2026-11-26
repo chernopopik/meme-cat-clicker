@@ -94,3 +94,193 @@ body {
 @keyframes runLeft { 0% { left: calc(100vw + 70px); transform: scaleX(1); } 100% { left: -70px; transform: scaleX(1); } }
 
 body.space-bg { background: radial-gradient(circle at 20% 30%, #311042 0%, #090d16 50%, #020617 100%) !important; }
+/* =========================================================
+   МОБИЛЬНАЯ АДАПТАЦИЯ (ВЕРТИКАЛЬНЫЙ И ГОРИЗОНТАЛЬНЫЙ РЕЖИМЫ)
+   ========================================================= */
+
+/* Общие правила для всех телефонов и планшетов */
+@media (max-width: 950px) {
+    body {
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        overflow: hidden;
+    }
+
+    /* Модальные окна не вылезают за края экрана телефона */
+    .modal-box {
+        width: 94vw !important;
+        max-width: 94vw !important;
+        max-height: 88vh !important;
+        padding: 14px !important;
+        box-sizing: border-box;
+    }
+
+    /* Сетка скинов и наград в 2 колонки вместо 3 на узких экранах */
+    #skin-grid, #daily-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Переносим кнопку звука вниз слева над улучшениями, чтобы не перекрывалась шторкой VK */
+    #mute-btn {
+        top: auto !important;
+        right: auto !important;
+        bottom: 12px !important;
+        left: 12px !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 16px !important;
+        z-index: 50 !important;
+    }
+}
+
+/* 1. ВЕРТИКАЛЬНЫЙ РЕЖИМ ТЕЛЕФОНА (Портретная ориентация) */
+@media (max-width: 768px) and (orientation: portrait) {
+    body {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+    }
+
+    /* Верхняя панель кнопок (с отступом сверху 48px под системную шторку VK) */
+    #left-panel {
+        width: 100% !important;
+        height: auto !important;
+        padding: 50px 8px 6px 8px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 6px !important;
+        box-sizing: border-box;
+        flex-shrink: 0;
+    }
+
+    #left-panel .side-btn {
+        min-width: 64px !important;
+        padding: 6px 4px !important;
+        font-size: 10px !important;
+        flex-shrink: 0;
+    }
+
+    #left-panel .side-btn .big {
+        font-size: 16px !important;
+        margin-bottom: 2px;
+    }
+
+    /* Центральная зона с котом */
+    #center-area {
+        width: 100% !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        position: relative !important;
+    }
+
+    #score {
+        font-size: 26px !important;
+    }
+
+    #per-sec {
+        font-size: 13px !important;
+    }
+
+    #cat-btn {
+        width: 145px !important;
+        height: 145px !important;
+    }
+
+    #cat-emoji {
+        font-size: 90px !important;
+    }
+
+    #cat-img {
+        width: 135px !important;
+        height: 135px !important;
+    }
+
+    /* Нижняя панель улучшений */
+    #right-panel {
+        width: 100% !important;
+        height: 36dvh !important;
+        max-height: 36dvh !important;
+        overflow-y: auto !important;
+        padding: 8px 10px 55px 10px !important;
+        box-sizing: border-box;
+        border-top: 2px solid rgba(56, 189, 248, 0.35);
+        flex-shrink: 0;
+    }
+}
+
+/* 2. ГОРИЗОНТАЛЬНЫЙ РЕЖИМ ТЕЛЕФОНА (Альбомная ориентация) */
+@media (max-height: 520px) and (orientation: landscape) {
+    body {
+        display: flex !important;
+        flex-direction: row !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+    }
+
+    /* Компактная левая панель в 2 столбца */
+    #left-panel {
+        width: 145px !important;
+        height: 100dvh !important;
+        padding: 8px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 5px !important;
+        overflow-y: auto !important;
+        box-sizing: border-box;
+        flex-shrink: 0;
+    }
+
+    #left-panel .side-btn {
+        padding: 4px 2px !important;
+        font-size: 9px !important;
+        min-height: 42px !important;
+    }
+
+    #left-panel .side-btn .big {
+        font-size: 14px !important;
+    }
+
+    /* Центральный кот чуть меньше, чтобы влезал по высоте */
+    #center-area {
+        flex: 1 1 auto !important;
+        height: 100dvh !important;
+        min-width: 0 !important;
+    }
+
+    #score {
+        font-size: 22px !important;
+    }
+
+    #cat-btn {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    #cat-emoji {
+        font-size: 75px !important;
+    }
+
+    #cat-img {
+        width: 110px !important;
+        height: 110px !important;
+    }
+
+    /* Правая панель улучшений с отступом сверху под шторку VK */
+    #right-panel {
+        width: 240px !important;
+        height: 100dvh !important;
+        padding: 44px 8px 10px 8px !important;
+        overflow-y: auto !important;
+        box-sizing: border-box;
+        flex-shrink: 0;
+    }
+}
+
